@@ -34,10 +34,9 @@ public class ServiceRegistry {
 	// ajoute une classe de service après contrôle de la norme BLTi
 	public static void addService(Class<? extends Service> classe) throws BriException, AlreadyInException {
 		if (contains(classe))
-			throw new AlreadyInException("Vous ne pouvez ajoutez deux fois le même service");
+			throw new AlreadyInException("Vous ne pouvez pas ajouter deux fois le même service");
 		if (normeBri(classe))
 			servicesClasses.add(classe);
-		System.out.println("size :" + servicesClasses.get(0).getSimpleName());
 	}
 
 	public static void updateService(int indexService, Class<? extends Service> classe) throws BriException {
@@ -58,19 +57,20 @@ public class ServiceRegistry {
 
 	private static boolean contains(Class<?> service) {
 		for (Class<? extends Service> class1 : servicesClasses) {
-			if (class1.getName().equals(service.getName()))
-				;
-			return true;
+			if (class1.getName().equals(service.getName())) {
+				System.out.println(class1.getName() + " et " + service.getName());
+				return true;
+			}
 		}
 		return false;
 	}
-	
+
 	public static Service newService(ServerSocket client) throws IOException {
-		switch(client.getLocalPort()) {
+		switch (client.getLocalPort()) {
 		case 3000:
 			return new ServiceBRiProg(client.accept());
 		case 4000:
-			return new ServiceBRi(client.accept());
+			return new ServiceBRiAmat(client.accept());
 		default:
 			break;
 		}
@@ -91,14 +91,14 @@ public class ServiceRegistry {
 				return true;
 			}
 		}
-		throw new BriException("Implementes pas interface Service");
+		throw new BriException("La classe n'implémente pas l'interface Service");
 	}
 
 	private static boolean isPublic(Class<?> classe) throws BriException {
 		if (Modifier.isPublic(classe.getClass().getModifiers())) {
 			return true;
 		} else {
-			throw new BriException("La classe n'est pas publique");
+			throw new BriException("La classe n'est pas public");
 		}
 	}
 
@@ -129,7 +129,7 @@ public class ServiceRegistry {
 				}
 			}
 		}
-		throw new BriException("Pas de socket conforme");
+		throw new BriException("La socket n'est pas conforme");
 	}
 
 	private static boolean hasStaticToStringueWithoutException(Class<?> classe) throws BriException {
@@ -139,7 +139,7 @@ public class ServiceRegistry {
 				return true;
 			}
 		}
-		throw new BriException("Pas de toStringue static sans exception");
+		throw new BriException("Votre classe ne contient pas de méthode toStringue sans exception");
 	}
 
 }

@@ -14,8 +14,6 @@ public class Bdd {
 	public static Client Login(String login, String mdp) throws WrongPassword {
 		// Mauvais mdp
 		if ((clients.get(login) != null) && (!clients.get(login).getMdp().equals(mdp))) {
-			System.out.println(login + " // ["+ mdp + "]");
-			System.out.println(clients.get(login));
 			throw new WrongPassword("Mauvais mot de passe !");
 		}
 		// creation de compte
@@ -23,8 +21,14 @@ public class Bdd {
 			Client newClient = new Client(mdp);
 			clients.put(login, newClient);
 			return newClient;
-		} else {
+		}
+		// dejà inscrit
+		else {
 			return clients.get(login);
 		}
+	}
+	
+	public static Client getClient(String id) {
+		return clients.get(id);
 	}
 }

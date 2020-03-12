@@ -22,7 +22,7 @@ public class SendEmail {
         prop.put("mail.smtp.port", "587");
         
         String myAccount = "imabotcreatedbyrf2@gmail.com";
-        String myPassword = "myBOTpassword94!";
+        String myPassword = "myBOTpasswordtwitter94!";
 
         Session session = Session.getInstance(prop, new Authenticator() {
         	protected PasswordAuthentication getPasswordAuthentication() {

@@ -7,12 +7,11 @@ import java.net.*;
 
 import client.Bdd;
 import client.Client;
+import exception.WrongPassword;
 
-class ServiceBRi implements Service {
+public class ServiceBRiAmat extends AbstractService {
 
-	private Socket client;
-
-	ServiceBRi(Socket socket) {
+	public ServiceBRiAmat(Socket socket) {
 		client = socket;
 	}
 
@@ -21,10 +20,20 @@ class ServiceBRi implements Service {
 			BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 			PrintWriter out = new PrintWriter(client.getOutputStream(), true);
 
-			out.println("Entrez votre login");
-			String login = in.readLine();
-			out.println("Entrez votre mot de passe");
-			String mdp = in.readLine();
+			Client currentClient = null;
+
+			while (currentClient == null) {
+				out.println("Entrez votre login");
+				identifiant = in.readLine();
+				out.println("Entrez votre mot de passe");
+				String mdp = in.readLine();
+				try {
+					currentClient = Bdd.Login(identifiant, mdp);
+				} catch (WrongPassword e) {
+					out.println(e.getMessage() + PRESS_ENTER);
+					in.readLine();
+				}
+			}
 			while (true) {
 				out.println(ServiceRegistry.toStringue() + " ##Tapez le numéro de service désiré :");
 				int choix = Integer.parseInt(in.readLine());
